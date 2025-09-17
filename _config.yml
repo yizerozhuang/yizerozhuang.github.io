@@ -11,11 +11,11 @@ plugins:
 
 # Site settings
 url: ""
-baseurl: ""
+baseurl: "https://yizerozhuang.github.io"
 
 author:
-  name: Your Name
-  email: your@email.com
+  name: Yi Zhuang
+  email: yee.zhuang@gmail.com
 
 defaults:
   - scope:
