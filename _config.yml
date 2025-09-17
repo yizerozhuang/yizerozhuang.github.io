@@ -1,0 +1,31 @@
+title: Your Name
+description: Personal website, blog, photos, and resume
+
+# Use the built-in GitHub Pages Hacker theme
+theme: jekyll-theme-hacker
+
+# Optional but recommended GitHub Pages-supported plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Site settings
+url: ""
+baseurl: ""
+
+author:
+  name: Your Name
+  email: your@email.com
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: post
+      permalink: "/blog/:title/"
+
+permalink: pretty
+
+exclude:
+  - README.md
