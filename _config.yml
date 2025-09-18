@@ -1,4 +1,4 @@
-title: Your Name
+title: Yi Zhuang
 description: Personal website, blog, photos, and resume
 
 # Use the built-in GitHub Pages Hacker theme
@@ -11,7 +11,7 @@ plugins:
 
 # Site settings
 url: "https://yizerozhuang.github.io"
-baseurl: "/blog"
+baseurl: ""
 
 author:
   name: Yi Zhuang
