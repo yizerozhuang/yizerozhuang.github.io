@@ -10,8 +10,8 @@ plugins:
   - jekyll-seo-tag
 
 # Site settings
-url: ""
-baseurl: "https://yizerozhuang.github.io"
+url: "https://yizerozhuang.github.io"
+baseurl: "/blog"
 
 author:
   name: Yi Zhuang
