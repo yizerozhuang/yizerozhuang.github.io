@@ -1,9 +1,11 @@
 ---
 title: Welcome to my blog
-description: Kicking off my personal site with Hacker theme
-tags: [intro, jekyll]
+description: First blog
+tags: [intro]
+date: 2025-09-17
 ---
 
-Hello world! This is my first post on my new site powered by Jekyll and the Hacker theme. I'll use this space to share notes, projects, and ideas.
+Hello world! I have been thinking about writing my own blog and website for quite a while, I am quite a procrasting person, but it's been quite a unpleasant time for me recently, so I decided to focus more time and energy on myself.
+And here we are, finnally meet you guys, I assume you do care about me since you clicked the website link and read my first blog. I will add more and more content like my throught or what I been doing, thank you for your visiting !
 
-Stay tuned.
+Have A good day XD!
