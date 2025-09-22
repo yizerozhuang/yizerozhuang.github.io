@@ -33,3 +33,4 @@ Thumbs.db
 # Static site generators
 .cache/
 public/
+_site/

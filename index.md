@@ -13,10 +13,6 @@ title: Home
 
 # Welcome
 
-This is my personal website built with Jekyll on GitHub Pages using the Hacker theme.
+This is my personal website 
 
-- I write about things I'm learning in the **Blog**.
-- I share snapshots in **Photos**.
-- Find my background in **Resume**.
-
-Thanks for visiting!
+Thanks for visiting, and In case I don't you, good morning, good afternoon and good night
