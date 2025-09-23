@@ -1,13 +1,13 @@
 # Personal Site (Jekyll + Hacker theme)
 
-This is a GitHub Pages-ready Jekyll site using the Hacker theme with pages for Home, Blog, Photos, and Resume.
+This is a GitHub Pages-ready Jekyll site using the Hacker theme with pages for Home, Blog, Photos (Gallery), and Resume.
 
 ## Structure
 
 - `index.md`: Home
 - `blog/index.md`: Blog index (lists posts from `_posts/`)
 - `_posts/`: Blog posts (example included)
-- `photos/index.md`: Photo gallery (driven by `_data/photos.yml`)
+- `gallery/index.md`: Photo gallery (driven by `_data/photos.yml`)
 - `_data/photos.yml`: List of photos (url, title, caption)
 - `resume/index.md`: Resume page with link to `assets/resume.pdf`
 - `assets/`: Static assets (e.g., resume.pdf)
