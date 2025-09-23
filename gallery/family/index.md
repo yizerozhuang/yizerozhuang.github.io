@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Travel
+title: Family
 ---
 
 <nav>
@@ -11,16 +11,16 @@ title: Travel
   <hr />
 </nav>
 
-# Travel
+<p><a href="{{ '/gallery/' | relative_url }}">&larr; Back to Gallery</a></p>
+
+# Family
 
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
-{% for photo in site.data.photos %}
-  {% if photo.album == 'travel' %}
+{% for photo in site.data.gallery.family %}
   <figure>
     <img src="{{ photo.url }}" alt="{{ photo.title }}" style="width:100%;height:auto;border:1px solid #444;"/>
     <figcaption><strong>{{ photo.title }}</strong><br/>{{ photo.caption }}</figcaption>
   </figure>
-  {% endif %}
 {% endfor %}
 </div>
 
