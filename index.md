@@ -27,6 +27,8 @@ This is my personal website, the website is still under construction, the curren
 * Add comment function in the blog page
 
 Feel free to reach out to me if you have any intersting or anything you want me to add
-Thanks for visiting, and In case I don't you, good morning, good afternoon and good night
+Thanks for visiting.
 
-Last edit: 2025/09/22
+In case I don't see you, good morning, good afternoon and good night.
+
+Last edit: 2025/09/30
