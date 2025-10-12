@@ -7,7 +7,8 @@ title: Resume
   <a href="{{ '/' | relative_url }}">Home</a> ·
   <a href="{{ '/blog/' | relative_url }}">Blog</a> ·
   <a href="{{ '/gallery/' | relative_url }}">Photos</a> ·
-  <a href="{{ '/resume/' | relative_url }}">Resume</a>
+  <a href="{{ '/resume/' | relative_url }}">Resume</a> ·
+  <a href="{{ '/music/' | relative_url }}">Music</a>
   <hr />
 </nav>
 

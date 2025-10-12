@@ -3,14 +3,6 @@ layout: default
 title: Home
 ---
 
-<nav>
-  <a href="{{ '/' | relative_url }}">Home</a> ·
-  <a href="{{ '/blog/' | relative_url }}">Blog</a> ·
-  <a href="{{ '/gallery/' | relative_url }}">Photos</a> ·
-  <a href="{{ '/resume/' | relative_url }}">Resume</a>
-  <hr />
-</nav>
-
 # Welcome
 
 This is my personal website, the website is still under construction, the current plan is
