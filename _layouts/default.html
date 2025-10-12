@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- seo -%}
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  {%- feed_meta -%}
+  {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+  {%- endif -%}
+</head>
+<body>
+  <nav class="header-nav">
+    <div class="nav-left">
+      <h1>Yi Zhuang <img src='/assets/coding_dog.gif' alt='coding_dog' width='40px' /></h1>
+      <div class="nav-links">
+        <a href="{{ '/' | relative_url }}">Home</a> ·
+        <a href="{{ '/blog/' | relative_url }}">Blog</a> ·
+        <a href="{{ '/gallery/' | relative_url }}">Photos</a> ·
+        <a href="{{ '/resume/' | relative_url }}">Resume</a>
+      </div>
+    </div>
+    
+    <div class="nav-right">
+      <div class="mini-music-player">
+        <div class="player-info">
+          <span id="current-title" class="track-title">Select a track</span>
+          <span id="current-artist" class="track-artist">Artist</span>
+        </div>
+        
+        <div class="player-controls">
+          <button id="prev-btn" class="control-btn" title="Previous">⏮️</button>
+          <button id="play-pause-btn" class="control-btn play-pause" title="Play/Pause">▶️</button>
+          <button id="next-btn" class="control-btn" title="Next">⏭️</button>
+          <button id="mute-btn" class="control-btn" title="Mute">🔊</button>
+          <input type="range" id="volume" min="0" max="100" value="70" class="volume-slider" title="Volume" />
+        </div>
+      </div>
+    </div>
+  </nav>
+  <hr />
+
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">
+      {{ content }}
+    </div>
+  </main>
+
+  <audio id="audio-player" preload="metadata"></audio>
+
+  <style>
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 30px;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+    }
+
+    .nav-left {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .nav-left h1 {
+      margin: 0 0 10px 0;
+      font-size: 2.5em;
+      color: #f0f6fc;
+    }
+
+    .nav-links {
+      margin-top: 10px;
+    }
+
+    .nav-links a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: #79c0ff;
+      text-decoration: underline;
+    }
+
+    .nav-right {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .mini-music-player {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      max-width: 400px;
+    }
+
+    .player-info {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .track-title {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: #f0f6fc;
+      margin: 0;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .track-artist {
+      color: #8b949e;
+      font-size: 0.8em;
+      margin: 0;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-btn {
+      background: none;
+      border: none;
+      font-size: 1.1em;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn:hover {
+      background: rgba(88, 166, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    .play-pause {
+      background: #238636;
+      color: white;
+      font-size: 1.3em;
+      padding: 8px;
+    }
+
+    .play-pause:hover {
+      background: #2ea043;
+      transform: scale(1.05);
+    }
+
+    .volume-slider {
+      width: 60px;
+      height: 3px;
+      border-radius: 2px;
+      background: #30363d;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #58a6ff;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .header-nav {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav-right {
+        min-width: auto;
+      }
+      
+      .mini-music-player {
+        max-width: none;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+      
+      .player-controls {
+        gap: 6px;
+      }
+      
+      .control-btn {
+        font-size: 1em;
+        padding: 5px;
+      }
+      
+      .play-pause {
+        font-size: 1.1em;
+        padding: 6px;
+      }
+      
+      .volume-slider {
+        width: 50px;
+      }
+    }
+  </style>
+
+  <script>
+    // Simplified Music Player JavaScript
+    class MiniMusicPlayer {
+      constructor() {
+        this.audio = document.getElementById('audio-player');
+        this.playlist = [
+          {
+            title: "Blue in Green",
+            artist: "Miles Davis",
+            audio: "/assets/music/blue-in-green.mp3"
+          },
+          {
+            title: "Take Five", 
+            artist: "Dave Brubeck",
+            audio: "/assets/music/take-five.mp3"
+          },
+          {
+            title: "Clair de Lune",
+            artist: "Claude Debussy", 
+            audio: "/assets/music/clair-de-lune.mp3"
+          }
+        ];
+        this.currentTrackIndex = 0;
+        this.isPlaying = false;
+        this.volume = 0.7;
+        
+        this.initializeElements();
+        this.setupEventListeners();
+        this.updateDisplay();
+      }
+
+      initializeElements() {
+        this.elements = {
+          playPauseBtn: document.getElementById('play-pause-btn'),
+          prevBtn: document.getElementById('prev-btn'),
+          nextBtn: document.getElementById('next-btn'),
+          muteBtn: document.getElementById('mute-btn'),
+          volumeSlider: document.getElementById('volume'),
+          currentTitle: document.getElementById('current-title'),
+          currentArtist: document.getElementById('current-artist')
+        };
+      }
+
+      setupEventListeners() {
+        this.elements.playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+        this.elements.prevBtn.addEventListener('click', () => this.previousTrack());
+        this.elements.nextBtn.addEventListener('click', () => this.nextTrack());
+        this.elements.muteBtn.addEventListener('click', () => this.toggleMute());
+        this.elements.volumeSlider.addEventListener('input', (e) => {
+          this.setVolume(e.target.value / 100);
+        });
+        
+        this.audio.addEventListener('ended', () => this.nextTrack());
+      }
+
+      togglePlayPause() {
+        if (this.isPlaying) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      }
+
+      play() {
+        this.audio.play().then(() => {
+          this.isPlaying = true;
+          this.elements.playPauseBtn.textContent = '⏸️';
+        }).catch(e => {
+          console.log('Playback failed:', e);
+        });
+      }
+
+      pause() {
+        this.audio.pause();
+        this.isPlaying = false;
+        this.elements.playPauseBtn.textContent = '▶️';
+      }
+
+      previousTrack() {
+        this.currentTrackIndex = (this.currentTrackIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadCurrentTrack();
+      }
+
+      nextTrack() {
+        this.currentTrackIndex = (this.currentTrackIndex + 1) % this.playlist.length;
+        this.loadCurrentTrack();
+      }
+
+      loadCurrentTrack() {
+        const track = this.playlist[this.currentTrackIndex];
+        this.audio.src = track.audio;
+        this.audio.load();
+        this.updateDisplay();
+        
+        if (this.isPlaying) {
+          this.audio.play().catch(e => console.log('Playback failed:', e));
+        }
+      }
+
+      toggleMute() {
+        if (this.audio.muted) {
+          this.audio.muted = false;
+          this.elements.muteBtn.textContent = '🔊';
+        } else {
+          this.audio.muted = true;
+          this.elements.muteBtn.textContent = '🔇';
+        }
+      }
+
+      setVolume(volume) {
+        this.volume = volume;
+        this.audio.volume = volume;
+        this.elements.volumeSlider.value = volume * 100;
+      }
+
+      updateDisplay() {
+        const track = this.playlist[this.currentTrackIndex];
+        if (track) {
+          this.elements.currentTitle.textContent = track.title;
+          this.elements.currentArtist.textContent = track.artist;
+        }
+      }
+    }
+
+    // Initialize the music player when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new MiniMusicPlayer();
+    });
+  </script>
+</body>
+</html>
