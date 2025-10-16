@@ -226,19 +226,9 @@
         this.audio = document.getElementById('audio-player');
         this.playlist = [
           {
-            title: "Blue in Green",
-            artist: "Miles Davis",
-            audio: "/assets/music/blue-in-green.mp3"
-          },
-          {
-            title: "Take Five", 
-            artist: "Dave Brubeck",
-            audio: "/assets/music/take-five.mp3"
-          },
-          {
-            title: "Clair de Lune",
-            artist: "Claude Debussy", 
-            audio: "/assets/music/clair-de-lune.mp3"
+            title: "In My Life",
+            artist: "the Beatles",
+            audio: "/assets/music/In%20My%20Life%20-%20The%20Beatles.mp3"
           }
         ];
         this.currentTrackIndex = 0;
@@ -247,6 +237,8 @@
         
         this.initializeElements();
         this.setupEventListeners();
+        // Ensure an initial source is loaded so Play works immediately
+        this.loadCurrentTrack();
         this.updateDisplay();
       }
 
@@ -283,6 +275,10 @@
       }
 
       play() {
+        // If no source is set yet, load current track first
+        if (!this.audio.src) {
+          this.loadCurrentTrack();
+        }
         this.audio.play().then(() => {
           this.isPlaying = true;
           this.elements.playPauseBtn.textContent = '⏸️';
