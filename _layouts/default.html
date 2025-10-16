@@ -5,6 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {%- seo -%}
+  <!-- Favicon: inline SVG to avoid /favicon.ico 404s, plus PNG fallback -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' ry='12' fill='%230d1117'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' font-family='Segoe UI, Roboto, Arial, sans-serif' font-size='32' fill='%2358a6ff'%3EY%3C/text%3E%3Ctext x='50%25' y='86%25' text-anchor='middle' font-family='Segoe UI, Roboto, Arial, sans-serif' font-size='24' fill='%238b949e'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" type="image/png" href="{{ '/assets/music/default-album.jpg' | relative_url }}" />
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
@@ -238,6 +241,10 @@
         this.setupEventListeners();        // Ensure an initial source is loaded so Play works immediately
         this.loadCurrentTrack();
         this.updateDisplay();
+        // Restore persisted state (in case of full reload)
+        this.restoreStateFromStorage();
+        // Attempt muted autoplay on load; unmute on first interaction
+        this.tryAutoplayOnLoad();
       }
 
       initializeElements() {
@@ -259,9 +266,16 @@
         this.elements.muteBtn.addEventListener('click', () => this.toggleMute());
         this.elements.volumeSlider.addEventListener('input', (e) => {
           this.setVolume(e.target.value / 100);
+          this.persistStateToStorage();
         });
         
         this.audio.addEventListener('ended', () => this.nextTrack());
+        // Persist playback position periodically
+        this.audio.addEventListener('timeupdate', () => {
+          if (Math.floor(this.audio.currentTime) % 2 === 0) {
+            this.persistStateToStorage();
+          }
+        });
       }
 
       togglePlayPause() {
@@ -280,25 +294,59 @@
         this.audio.play().then(() => {
           this.isPlaying = true;
           this.elements.playPauseBtn.textContent = '⏸️';
+          this.persistStateToStorage();
         }).catch(e => {
           console.log('Playback failed:', e);
         });
+      }
+
+      
+
+      showAutoplayPrompt() {
+        if (document.getElementById('autoplay-prompt')) return;
+        const prompt = document.createElement('button');
+        prompt.id = 'autoplay-prompt';
+        prompt.textContent = '▶️ Click to enable music';
+        prompt.style.cssText = `
+          position: fixed;
+          bottom: 16px;
+          right: 16px;
+          z-index: 1000;
+          background: #238636;
+          color: #fff;
+          border: 1px solid #2ea043;
+          border-radius: 6px;
+          padding: 10px 14px;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        prompt.addEventListener('click', () => {
+          // Keep muted until user interacts (this click counts)
+          this.audio.muted = false;
+          this.elements.muteBtn.textContent = '🔊';
+          this.play();
+          if (prompt.parentNode) prompt.parentNode.removeChild(prompt);
+        });
+        document.body.appendChild(prompt);
       }
 
       pause() {
         this.audio.pause();
         this.isPlaying = false;
         this.elements.playPauseBtn.textContent = '▶️';
+        this.persistStateToStorage();
       }
 
       previousTrack() {
         this.currentTrackIndex = (this.currentTrackIndex - 1 + this.playlist.length) % this.playlist.length;
         this.loadCurrentTrack();
+        this.persistStateToStorage();
       }
 
       nextTrack() {
         this.currentTrackIndex = (this.currentTrackIndex + 1) % this.playlist.length;
         this.loadCurrentTrack();
+        this.persistStateToStorage();
       }
 
       loadCurrentTrack() {
@@ -310,6 +358,7 @@
         if (this.isPlaying) {
           this.audio.play().catch(e => console.log('Playback failed:', e));
         }
+        this.persistStateToStorage();
       }
 
       toggleMute() {
@@ -320,12 +369,14 @@
           this.audio.muted = true;
           this.elements.muteBtn.textContent = '🔇';
         }
+        this.persistStateToStorage();
       }
 
       setVolume(volume) {
         this.volume = volume;
         this.audio.volume = volume;
         this.elements.volumeSlider.value = volume * 100;
+        this.persistStateToStorage();
       }
 
       updateDisplay() {
@@ -335,12 +386,119 @@
           this.elements.currentArtist.textContent = track.artist;
         }
       }
+
+      persistStateToStorage() {
+        try {
+          const state = {
+            currentTrackIndex: this.currentTrackIndex,
+            currentTime: this.audio.currentTime || 0,
+            isPlaying: this.isPlaying,
+            muted: this.audio.muted,
+            volume: this.audio.volume
+          };
+          sessionStorage.setItem('miniMusicPlayerState', JSON.stringify(state));
+        } catch (e) {
+          // Ignore storage errors
+        }
+      }
+
+      restoreStateFromStorage() {
+        try {
+          const raw = sessionStorage.getItem('miniMusicPlayerState');
+          if (!raw) return;
+          const state = JSON.parse(raw);
+          if (typeof state.currentTrackIndex === 'number') {
+            this.currentTrackIndex = Math.min(Math.max(state.currentTrackIndex, 0), this.playlist.length - 1);
+          }
+          this.loadCurrentTrack();
+          if (typeof state.volume === 'number') this.setVolume(state.volume);
+          if (typeof state.muted === 'boolean') this.audio.muted = state.muted;
+          const setTime = () => {
+            if (typeof state.currentTime === 'number' && !isNaN(state.currentTime)) {
+              try { this.audio.currentTime = state.currentTime; } catch (e) {}
+            }
+            if (state.isPlaying) this.play();
+            this.audio.removeEventListener('loadedmetadata', setTime);
+          };
+          this.audio.addEventListener('loadedmetadata', setTime);
+        } catch (e) {
+          // Ignore storage errors
+        }
+      }
     }
 
     // Initialize the music player when the page loads
     document.addEventListener('DOMContentLoaded', () => {
-      new MiniMusicPlayer();
+      window.__miniMusicPlayer__ = new MiniMusicPlayer();
+      // Setup basic PJAX to preserve the audio element and player state across navigations
+      setupPjaxNavigation();
     });
+
+    function setupPjaxNavigation() {
+      const contentWrapper = document.querySelector('main.page-content .wrapper');
+      if (!contentWrapper) return;
+
+      // Intercept clicks on internal links
+      document.addEventListener('click', async (e) => {
+        const anchor = e.target.closest('a');
+        if (!anchor) return;
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+        if (anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+        // Only handle same-origin, internal links
+        const url = new URL(href, window.location.origin);
+        if (url.origin !== window.location.origin) return;
+        // Allow hash-only links to pass through
+        if (url.pathname === window.location.pathname && url.hash) return;
+
+        e.preventDefault();
+        await pjaxNavigate(url.href, true);
+      });
+
+      window.addEventListener('popstate', async (event) => {
+        // On back/forward, load the state URL
+        await pjaxNavigate(document.location.href, false);
+      });
+    }
+
+    async function pjaxNavigate(href, push) {
+      try {
+        const res = await fetch(href, { headers: { 'X-PJAX': 'true' } });
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newContent = doc.querySelector('main.page-content .wrapper');
+        const contentWrapper = document.querySelector('main.page-content .wrapper');
+        if (newContent && contentWrapper) {
+          // Swap inner contents only to preserve the audio element and player in the layout
+          contentWrapper.innerHTML = newContent.innerHTML;
+        }
+        // Update title
+        if (doc.title) document.title = doc.title;
+        // Re-run inline scripts found inside the new content, if any
+        reexecuteInlineScripts(contentWrapper);
+        if (push) history.pushState({}, '', href);
+        // Optionally scroll to top on navigation
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } catch (err) {
+        console.error('PJAX navigation failed, falling back to full load', err);
+        window.location.href = href;
+      }
+    }
+
+    function reexecuteInlineScripts(scope) {
+      if (!scope) return;
+      const scripts = scope.querySelectorAll('script');
+      scripts.forEach((oldScript) => {
+        const newScript = document.createElement('script');
+        // Copy attributes
+        for (const attr of oldScript.attributes) {
+          newScript.setAttribute(attr.name, attr.value);
+        }
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+    }
   </script>
 </body>
 </html>

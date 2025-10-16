@@ -7,7 +7,7 @@ title: Home
 
 This is my personal website, the website is still under construction, the current plan is
 
-* Add a musci player to play some of my favourite music(Jazz mainly since this is a blog XD)
+* ✅Add a musci player to play some of my favourite music(Jazz mainly since this is a blog XD)
 * Fill the photo pages and fill some of my favorite photos, current Album including 
   * Selfie
   * Travel
@@ -23,4 +23,4 @@ Thanks for visiting.
 
 In case I don't see you, good morning, good afternoon and good night.
 
-Last edit: 2025/09/30
+Last edit: 2025/10/16
