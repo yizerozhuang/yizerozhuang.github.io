@@ -231,7 +231,17 @@
           {
             title: "In My Life",
             artist: "the Beatles",
-            audio: "/assets/music/In%20My%20Life%20-%20The%20Beatles.mp3"
+            audio: "/assets/music/In_My_Life.mp3"
+          },
+          {
+            title: "Dont Know Why",
+            artist: "Norah Jones",
+            audio: "/assets/music/Dont_Know_Why.mp3"
+          },
+          {
+            title: "I Wish You Love",
+            artist: "Laufy",
+            audio: "/assets/music/I_Wish_You_Love.mp3"
           }
         ];
         this.currentTrackIndex = 0;
@@ -243,8 +253,7 @@
         this.updateDisplay();
         // Restore persisted state (in case of full reload)
         this.restoreStateFromStorage();
-        // Attempt muted autoplay on load; unmute on first interaction
-        this.tryAutoplayOnLoad();
+        // Autoplay on load disabled (method removed)
       }
 
       initializeElements() {
@@ -438,13 +447,18 @@
       const contentWrapper = document.querySelector('main.page-content .wrapper');
       if (!contentWrapper) return;
 
-      // Intercept clicks on internal links
+      // Intercept clicks on internal links (capture phase, left-click only)
       document.addEventListener('click', async (e) => {
+        // Ignore modified clicks and non-left clicks
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         const anchor = e.target.closest('a');
         if (!anchor) return;
+        if (anchor.hasAttribute('data-no-pjax')) return;
         const href = anchor.getAttribute('href');
         if (!href) return;
-        if (anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+        // Skip hash, mailto, tel
+        if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (anchor.target === '_blank' || anchor.hasAttribute('download') || anchor.rel === 'external') return;
         // Only handle same-origin, internal links
         const url = new URL(href, window.location.origin);
         if (url.origin !== window.location.origin) return;
@@ -453,7 +467,7 @@
 
         e.preventDefault();
         await pjaxNavigate(url.href, true);
-      });
+      }, true);
 
       window.addEventListener('popstate', async (event) => {
         // On back/forward, load the state URL
