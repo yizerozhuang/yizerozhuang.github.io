@@ -234,10 +234,8 @@
         this.currentTrackIndex = 0;
         this.isPlaying = false;
         this.volume = 0.7;
-        
         this.initializeElements();
-        this.setupEventListeners();
-        // Ensure an initial source is loaded so Play works immediately
+        this.setupEventListeners();        // Ensure an initial source is loaded so Play works immediately
         this.loadCurrentTrack();
         this.updateDisplay();
       }
